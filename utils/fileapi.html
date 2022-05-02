@@ -22,6 +22,7 @@ var ready = document.getElementById('ready'), loader = document.getElementById('
 function accomodate(result){
     window.parent.cifdata = result.replace(/"/g, '\x22').replace(/'/g, '\x27');
     window.parent.playerdata = window.parent.cifdata;
+    window.location.href = "../engines/jsmol/"
 }
 
 if (window.File && window.FileReader && window.FileList && window.Blob){
