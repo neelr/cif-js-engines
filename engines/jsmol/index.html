@@ -1,27 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-<title></title>
-<style>
-body{margin:0;padding:0;overflow:hidden;}
-html, body{height:100%;}
-</style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title></title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+    </style>
 </head>
+
 <body>
-<script type="text/javascript" src="JSmol.min.js"></script>
-<script type="text/javascript">
-var Info = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-    use: "HTML5"
-}
-jmolApplet0 = Jmol.getApplet("jmolApplet0", Info);
-if (window.parent && window.parent.cifdata){
-    Jmol.script(jmolApplet0,
-    'background white; load data "samplecifdata"\n' + window.parent.cifdata + '\nend "samplecifdata" {1 1 1}; select *; label %e; wireframe 0.07; set debug on;');
-}
-</script>
+    <script type="text/javascript" src="JSmol.min.js"></script>
+    <script type="text/javascript">
+    var ready = document.getElementById('ready'), loader = document.getElementById('loader');
+
+        function accomodate(result) {
+            window.parent.cifdata = result.replace(/"/g, '\x22').replace(/'/g, '\x27');
+            window.parent.playerdata = window.parent.cifdata;
+        }
+
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+            loader.style.display = 'block';
+            var fileapi = document.getElementById('fileapi');
+            var reader = new FileReader();
+            fileapi.onchange = function () {
+                if (!this.files[0] || !this.files[0].size) return alert("Error: file cannot be read (unaccessible?)");
+                reader.readAsText(this.files[0]);
+            }
+            reader.onloadend = function (event) {
+                window.accomodate(event.target.result);
+                ready.style.display = 'block';
+                loader.style.display = 'none';
+                var Info = {
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                    use: "HTML5"
+                }
+                jmolApplet0 = Jmol.getApplet("jmolApplet0", Info);
+                if (window.parent && window.parent.cifdata) {
+                    Jmol.script(jmolApplet0,
+                        'background white; load data "samplecifdata"\n' + window.parent.cifdata + '\nend "samplecifdata" {1 1 1}; select *; label %e; wireframe 0.07; set debug on;');
+                }
+            }
+        } else ready.style.display = 'block';
+
+        var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4) {
+                if (xmlhttp.status == 200) {
+                    window.accomodate(xmlhttp.responseText);
+                } else alert("Error: cannot load sample data!");
+            }
+        }
+        if (window.location.protocol.indexOf('http') === 0) {
+            xmlhttp.open("GET", '../data/top.cif');
+            xmlhttp.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
+            xmlhttp.send(1);
+        } else alert('Error: this page must be served by a web server');
+    </script>
 </body>
+
 </html>
