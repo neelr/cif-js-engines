@@ -1,11 +1,48 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-<title>CIF JavaScript Engines</title>
-<style>
-body{margin:0;padding:0;}
-</style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title></title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+    </style>
 </head>
-<frame id="top" name="top" src="engines/jsmol/index.html" target="top" scrolling="no">
+
+<body>
+    <script type="text/javascript" src="engines/jsmol/JSmol.min.js"></script>
+    <script type="text/javascript">
+    var ready = document.getElementById('ready');
+
+        function accomodate(result) {
+            window.parent.cifdata = result.replace(/"/g, '\x22').replace(/'/g, '\x27');
+            window.parent.playerdata = window.parent.cifdata;
+        }
+
+        var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4) {
+                if (xmlhttp.status == 200) {
+                    window.accomodate(xmlhttp.responseText);
+                } else alert("Error: cannot load sample data!");
+            }
+        }
+        if (window.location.protocol.indexOf('http') === 0) {
+            xmlhttp.open("GET", 'data/top.cif');
+            xmlhttp.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
+            xmlhttp.send(1);
+        } else alert('Error: this page must be served by a web server');
+    </script>
+</body>
+
 </html>
