@@ -27,6 +27,14 @@
         function accomodate(result) {
             window.parent.cifdata = result.replace(/"/g, '\x22').replace(/'/g, '\x27');
             window.parent.playerdata = window.parent.cifdata;
+            var Info = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    use: "HTML5"
+}
+jmolApplet0 = Jmol.getApplet("jmolApplet0", Info);
+            Jmol.script(jmolApplet0,
+    'background white; load data "samplecifdata"\n' + window.parent.cifdata + '\nend "samplecifdata" {1 1 1}; select *; label %e; wireframe 0.07; set debug on;');
         }
 
         var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
